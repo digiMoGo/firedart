@@ -130,6 +130,11 @@ class DocumentReference extends Reference {
 
   Future<Document> get() => _gateway.getDocument(fullPath);
 
+  Future<Document?> getIfExists() async {
+    if (await exists) return get();
+    return null;
+  }
+
   @Deprecated('Use the stream getter instead')
   Stream<Document?> subscribe() => stream;
 
