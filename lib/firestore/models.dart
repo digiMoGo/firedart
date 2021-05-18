@@ -131,8 +131,15 @@ class DocumentReference extends Reference {
   Future<Document> get() => _gateway.getDocument(fullPath);
 
   Future<Document?> getIfExists() async {
-    if (await exists) return get();
-    return null;
+    try {
+      return await get();
+    } on GrpcError catch (e) {
+      if (e.code == StatusCode.notFound) {
+        return null;
+      } else {
+        rethrow;
+      }
+    }
   }
 
   @Deprecated('Use the stream getter instead')
